@@ -1,0 +1,35 @@
+.grid{
+    width: 300px;
+    height: 300px;
+    border: solid black 2px;
+    display: flex;
+    flex-wrap: wrap;
+    background-color: black;
+    margin: auto;
+}
+.grid div{
+    width: 20px;
+    height: 20px;
+
+}
+body{
+    text-align: center;
+    background-color: antiquewhite;
+}
+.invader{
+    background-color: red;
+    border-radius: 10px;
+}
+.plr{
+    background-color: yellow;
+}
+#res{
+    color: green;
+    font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif
+}
+.laser{
+    background-color: greenyellow;
+}
+.boom{
+    background-color: aliceblue;
+}

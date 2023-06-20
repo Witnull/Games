@@ -1,0 +1,99 @@
+body{
+    color: white;
+    background-color: black;
+    font-weight: lighter;
+    font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif
+}
+h1{
+    text-align: center;
+    color: yellow;
+}
+.row {
+    display: flex;
+}  
+.column {
+    flex: 50%;
+    border: none;
+}
+div{
+    margin: auto;
+    border: solid yellow 2px;
+    background-color: rgb(60, 59, 59);
+}
+div h2{
+    text-align: left;
+    padding-left: 20px;
+    color: blueviolet;
+}
+div h3{
+    text-align: center;
+}
+
+.cell{
+    background-color: black;
+    border: dotted greenyellow 3px;
+    height: 80px;
+}
+.cell h3{
+    text-align: left;
+    padding-left: 20px;
+}
+
+
+#btn-text{
+    color: black;
+    font-weight: bolder;
+}
+
+#stats{
+    color: red;
+}
+#pname{
+    color: chartreuse;
+}
+#cost{
+    color: yellow;
+}
+#cost-special{
+    color: rgb(166, 112, 220);
+}
+.owned{
+    background-color: rgb(28, 92, 70);
+}
+#special-effect{
+    color: rgb(55, 239, 246);
+}
+#level{
+    color: burlywood;
+}
+#ascendlv{
+    color: rgb(196, 0, 250);
+}
+.buy-btn{
+    background-color: rgb(203, 223, 21);
+}
+.normal-btn{
+    background-color: coral;
+}
+.asc-btn{
+    background-color: rgba(255, 221, 0, 0.99);
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+}
+.btn{
+    position: absolute;
+    right: 20px;
+    width: 90px;
+    height: 60px;
+    text-align: center;
+    font-weight: bolder;
+    font-size: larger;
+    border-radius: 10px;
+    border: none;
+    margin-top: 10px;
+}
+progress {
+    width: 100%;
+    height: 10px;
+    border: none;
+    overflow: hidden;
+}

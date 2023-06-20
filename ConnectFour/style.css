@@ -1,0 +1,28 @@
+body{
+    text-align: center;
+    background-color: antiquewhite;
+}
+.grid{
+    background-color: rgb(163, 245, 217);
+    border: solid black 2px;
+    height: 120px;
+    width: 140px;
+    display: flex;
+    flex-wrap: wrap;
+    margin: auto;
+}
+.grid div{
+    width: 20px;
+    height: 20px;
+}
+.player-one{
+    background-color: red;
+    border-radius: 10px;
+}
+.player-two{
+    background-color: blue;
+    border-radius: 10px;
+}
+.winner{
+    color: gold;
+}
