@@ -1,0 +1,186 @@
+* {
+    box-sizing: border-box;
+  }
+body{
+    text-align: center;
+    background-color: black;
+}
+.column{
+    float: left;
+    width: 33.33%;
+    padding: 10px;
+    height: 700px;
+}
+.row:after{
+    content: "";
+    display: table;
+    clear: both;
+}
+.clickUI{
+    border: solid black 3px;
+    background-color: rgb(170, 255, 229);
+}
+
+@keyframes bounce {
+    0% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-20px);
+    }
+    100% {
+      transform: translateY(0);
+    }
+  }
+  
+  .bounce {
+    animation-name: bounce;
+    animation-duration: 0.5s; /* Adjust the duration as needed */
+    animation-timing-function: ease-in-out; /* Adjust the timing function as needed */
+  }
+  
+
+.clickUI #donutDp{
+    font-family:cursive;
+    background-color: rgba(128, 128, 128, 0.7);
+    height: 40px;
+    width: auto;
+}
+.clickUI #donut_s{
+    font-family: cursive;
+   color: brown;
+}
+.manageUI{
+    border: solid black 3px;
+    background-color: rgb(140, 26, 106);
+}
+.manageUI .cell{
+    background-color: rgba(89, 217, 53, 0.852);
+}
+.manageUI .cell .frame{
+    background-color: rgba(57, 93, 252, 0.564);
+}
+.t1{
+    margin: auto;
+    width: 35%;
+    height: 40px;
+    border-radius: 10px;
+    background-color: rgb(200, 200, 200);
+    font-weight: lighter;
+    font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+.t1 h1{
+   color: chocolate;
+}
+.upgradeUI{
+    border: solid black 3px;
+    background-color: rgb(247, 179, 43);
+  
+}
+.clickUI .ClickMe{
+    width: 300px;
+    height: 300px;
+    margin: auto;
+    margin-top: 100px;
+}
+
+#pname{
+    color: chartreuse;
+}
+.donutNumberColor{
+    color: pink;
+    -webkit-text-stroke: .5px rgba(255, 0, 247, 0.5);
+}
+.icon{
+    width: 30px;
+    height: 30px;
+}
+
+.icon-small{
+    width: 20px;
+    height: 20px;
+}
+
+.list {
+    height: 600px;
+    overflow-y: auto;
+    margin-left: -30px;
+}
+  
+.cell {
+    display: flex;
+    align-items: center;
+    background-color: rgb(170, 255, 229);
+    border:solid black 1px;
+}
+
+.cell .frame {
+    width: 65px;
+    height: 65px;
+    margin-right: 10px;
+    border: dotted rgb(255, 0, 0) 2px;
+    background-color: rgba(102, 230, 151, 0.821);
+}
+
+.cell .content {
+    text-align: left;
+    flex: 1;
+    font-family: monospace;
+    color: brown;
+}
+
+.cell .name {
+    font-weight: bold;
+    font-family: cursive;
+}
+
+.cell .amt {
+    width: 60px;
+    height: 60px;
+    font-size: 30px; /* Adjust the font size as needed */
+    font-family: monospace;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: gray;
+  }
+.cell .icon{
+    width: 60px;
+    height: 60px;
+}
+.cell:hover{
+    background-color: rgb(24, 157, 146);
+}
+
+
+
+.pop-up {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+    background-color: transparent;
+    font-family: cursive;
+    font-weight: bold;
+    font-size: 30px;
+    padding: 10px;
+    animation-name: flyUp;
+    animation-duration: 1s;
+  }
+  
+  @keyframes flyUp {
+    0% {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(-200px);
+    }
+  }
+  
+  .not-selectable {
+    user-select: none;
+  }
+
