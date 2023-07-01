@@ -6,7 +6,7 @@ body{
 
 .outer-frame{
   /*  background-color: cadetblue;*/
-    width: 750px;
+    width: 1050px;
     height: 600px;
     margin: auto;
 }
@@ -24,7 +24,7 @@ body{
 }
 
 .info-frame{
-    width: 175px;
+    width: 475;
     height: 550px;
     text-align: left;
 

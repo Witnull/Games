@@ -63,7 +63,7 @@ const snakeTag ='snake'
 const appleTag = 'fruit'
 const bodyTag = 'tail'
 const wallTag = 'wall'
-const default_speed = 1000 // 1s per block
+const default_speed = 700 // 1s per block
 const default_wallMode = 0 // 0:off 1:ring 2:random
 const max_WallMode = 4
 
@@ -80,6 +80,12 @@ let timerId_autoMove = null
 let score = 0
 let cellArray 
 let wallMode = 0
+
+
+
+function play_collectSFX(){
+   console.log('ding!')
+}
 
 function generateMap(){
     gridd.innerHTML=''
@@ -198,6 +204,7 @@ function autoMove(){
 
        /// eat apple
         if(cellArray[currPlrIdx].classList.contains(appleTag)){
+            play_collectSFX()
             cellArray[currPlrIdx].classList.remove(appleTag)
             score++
             if(diff == 0 &&  score >= hi_ez)
