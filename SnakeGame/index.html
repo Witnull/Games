@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Snake game</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <h1>-- Snake game --</h1>
+
+        <div class="outer-frame">
+            <div class="grid">
+                
+            </div>
+            <div class="info-frame">
+                <h2>--- Stats ---</h2>
+                <h3>Score: <span id="scoreDp"></span></h3>
+                <h4>Difficulty: <span id="diffDp"></span></h4>
+                <h2>- Settings -</h2>
+                <h4>Change difficulty:</h4>
+                <div class="change-diff">
+                    <button class="btn ez-btn">Ez</button>
+                    <button class="btn med-btn">Medium</button>
+                    <button class="btn hard-btn">Hard</button>
+                </div>
+                <h4>Wall ?</h4>
+                <button class="btn isWall">Wall: Off</button>
+                <h2>- Restart ? -</h2>
+                <button class="btn restart">Restart</button>
+            </div>
+        </div>
+        
+        <script src="app.js" async defer></script>
+    </body>
+</html>
