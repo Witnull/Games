@@ -52,16 +52,20 @@ body{
 }
 
 .grid .fruit{
-  background-color: rgb(75, 36, 36);  
+  background-color: rgb(73, 152, 20);  
+  box-shadow:0px 0px 5px 5px rgb(255, 0, 0) inset;
 }
 .grid .snake{
-    background-color: green;
+    background-color: rgb(19, 96, 3);
+    box-shadow:0px 0px 5px 2px rgb(104, 202, 34) inset;
 }
 .grid .tail{
-    background-color: rgb(13, 188, 13);
+    background-color: rgb(68, 165, 68);
+    box-shadow:0px 0px 0px 6px rgb(98, 218, 28) inset;
 }
 .grid .wall{
     background-color: rgb(203, 203, 203);
+    box-shadow:0px 0px 0px 6px rgb(99, 88, 88) inset;
 }
 #green{
     color: greenyellow;

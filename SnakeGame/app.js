@@ -6,10 +6,6 @@ const restartBtn = document.querySelector('.restart')
 const wallActiveBtn = document.querySelector('.isWall')
 
 
-const HTML_apple ='<img src="Images/1.png" alt="apple"></img>'
-const HTML_snakeHead ='<img src="Images/2.png" alt="head"></img>'
-
-
 const gridSize = 550
 const diff_set=[
     {
@@ -140,7 +136,6 @@ function initGame(){
     while(cellArray[currPlrIdx].classList.contains(wallTag)) 
 
     cellArray[currPlrIdx].classList.add(snakeTag)
-    cellArray[currPlrIdx].innerHTML=HTML_snakeHead
     ///////
 
     spawnApple()
@@ -173,7 +168,6 @@ function autoMove(){
     currDirection = inptDirection
     if(currDirection != 0){
         cellArray[currPlrIdx].classList.remove(snakeTag)
-        cellArray[currPlrIdx].innerHTML =''
         cellArray[currPlrIdx].classList.add(bodyTag)
         tailArr.enqueue(currPlrIdx)
 
@@ -200,13 +194,11 @@ function autoMove(){
         if(currDirection === 4  && currPlrIdx% diff_set[diff].mapSize == 0 )
             currPlrIdx -= diff_set[diff].mapSize
         cellArray[currPlrIdx].classList.add(snakeTag)
-        cellArray[currPlrIdx].innerHTML=HTML_snakeHead
        // console.log(tailArr.size())
 
        /// eat apple
         if(cellArray[currPlrIdx].classList.contains(appleTag)){
             cellArray[currPlrIdx].classList.remove(appleTag)
-            cellArray[currPlrIdx].innerHTML=''
             score++
             if(diff == 0 &&  score >= hi_ez)
                 hi_ez = score
@@ -223,9 +215,7 @@ function autoMove(){
         }
 
         if(tailArr.size()> score + 1){
-            let x = tailArr.dequeue()
-            cellArray[x].classList.remove(bodyTag)
-            cellArray[x].innerHTML=''
+            cellArray[tailArr.dequeue()].classList.remove(bodyTag)
         }
     }
 }
@@ -243,9 +233,9 @@ function spawnApple(){
     AplIdx = Math.floor(Math.random()*cellArray.length)
     if(cellArray[AplIdx].classList.contains(snakeTag) || cellArray[AplIdx].classList.contains(wallTag)) spawnApple()
     cellArray[AplIdx].classList.add(appleTag)
-    cellArray[AplIdx].innerHTML = HTML_apple
     
 }
+
 function DisplayStuff(){
     scoreDP.textContent = score + "| Hi: "
 
