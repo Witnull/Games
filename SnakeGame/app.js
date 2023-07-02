@@ -1,11 +1,14 @@
 const gridd = document.querySelector('.grid')
 const scoreDP =document.querySelector('#scoreDp')
-const diffDP =document.querySelector('#diffDp')
-const diff_change =document.querySelector('.change-diff')
+const diffModeBtn =document.querySelector('.diffMode')
 const restartBtn = document.querySelector('.restart')
-const wallActiveBtn = document.querySelector('.isWall')
+const wallModeBtn = document.querySelector('.wallMode')
 const gameModeBtn = document.querySelector('.gameMode')
 const desDP = document.querySelector('#des')
+const snakeModeBtn = document.querySelector('.snakeMode')
+const speedModeBtn = document.querySelector('.speedMode')
+const colorModeBtn = document.querySelector('.colorMode')
+
 
 const gridSize = 550
 const diff_set=[
@@ -61,24 +64,34 @@ class Queue {
     }
 }
 
-const default_diff = 1
-const default_dir = 0
+
 const snakeTag ='snake'
 const appleTag = 'fruit'
 const bodyTag = 'tail'
+const colorBTag = 'color' // + 1,2,3,n
 const wallTag = 'wall'
 const G_appleTag = 'Gapple'
 const bombTag = 'bomb'
 const meteorTag = 'meteor'
 
-
-const default_speed = 700 // .7s per block
+const default_diff = 1
+const max_diffMode = 3
+const default_dir = 0
 const default_meteorSpawn = 1000 // 5s
 const default_meteorDespawn = 7000 
 const default_wallMode = 0 // 0:off 1:ring 2:random
 const max_WallMode = 4
 const default_gameMode = 0 // 0:Classic 1:Bonus fruit + 1pts   2:Banquet 5%  3:Banquet 10% 4:meteor 5:Bomb 3%
-const max_GameMode = 7
+const max_gameMode = 7
+const default_snakeMode = 0 // 0:normal 1:slow growth 2:forever small
+const max_snakeMode = 3
+const default_maxSnakeLength = 120
+
+const default_speedMode = 2
+const speedMode_set=[1500,1000,700,500,300]
+
+const default_colorMode = 0
+const max_colorMode = 7 // 0:color1,1:color2,2:color3,3:rainbow
 
 let hi_ez =0
 let hi_med =0
@@ -95,8 +108,13 @@ let cellArray
 let wallMode = 0
 let gameMode = 0 
 let meteor_timerId = null
+let snakeLength = 3
+let snakeMode = default_snakeMode
+let max_snakeLength = default_maxSnakeLength
+let speedMode = default_speedMode
+let colorMode = default_colorMode
 
-
+let currBtag = 1 // for effect
 
 function play_collectSFX(){
    console.log('ding!')
@@ -118,16 +136,19 @@ function generateMap(){
                 i % diff_set[diff].mapSize == diff_set[diff].mapSize -1 || // right side
                 i > (diff_set[diff].mapSize* diff_set[diff].mapSize - diff_set[diff].mapSize) ){// bottom
                 cell.classList.add(wallTag)     
+                max_snakeLength--
             }
         }
         else if(wallMode === 2){
             if( ran >= 40 && ran <= 45){
                 cell.classList.add(wallTag)
+                max_snakeLength--
             }
         }
         else if(wallMode === 3){
             if( ran >= 40 && ran <= 51){
                 cell.classList.add(wallTag)
+                max_snakeLength--
             }
         }
         
@@ -156,6 +177,7 @@ function updCells(){
         if(gameMode ===5 || gameMode === 6){
             if( ran >= 40 && ran <= 43){
                 spawnApple(8038)
+                max_snakeLength--
             }
         }
     })
@@ -167,6 +189,7 @@ function initGame(){
     tailArr.clear()
     cellArray = {}
     score =0
+    max_snakeLength = diff_set[diff].mapSize*diff_set[diff].mapSize - 2
     clearInterval(timerId_autoMove)
     clearInterval(meteor_timerId)
     document.removeEventListener('keyup',changeDirection)
@@ -189,12 +212,12 @@ function initGame(){
 
     spawnApple()
     document.addEventListener('keyup',changeDirection)
-    timerId_autoMove = setInterval(autoMove,default_speed/diff_set[diff].speed)
+    timerId_autoMove = setInterval(autoMove,speedMode_set[speedMode]/diff_set[diff].speed)
     DisplayStuff()
 }
 initGame()
 restartBtn.addEventListener('click',initGame)
-wallActiveBtn.addEventListener('click',()=>{
+wallModeBtn.addEventListener('click',()=>{
     wallMode++
     if(wallMode > max_WallMode-1)
         wallMode = 0
@@ -202,22 +225,35 @@ wallActiveBtn.addEventListener('click',()=>{
 })
 gameModeBtn.addEventListener('click',()=>{
     gameMode++
-    if(gameMode > max_GameMode-1)
+    if(gameMode > max_gameMode-1)
         gameMode = 0
     initGame()
 })
+snakeModeBtn.addEventListener('click',()=>{
+    snakeMode++
+    if(snakeMode > max_snakeMode-1)
+        snakeMode = 0
+    initGame()
+})
+diffModeBtn.addEventListener('click',()=>{
+    diff++
+    if(diff > max_diffMode-1)
+        diff = 0
+    initGame()
+})
+speedModeBtn.addEventListener('click',()=>{
+    speedMode++
+    if(speedMode > speedMode_set.length-1)
+        speedMode = 0
+    initGame()
+})
 
-diff_change.querySelectorAll('.btn').forEach( item =>{
-   item.addEventListener('click',() => {
-        if(item.classList.contains('ez-btn') && diff != 0)
-            diff = 0
-        else if(item.classList.contains('med-btn') && diff != 1)
-            diff = 1
-        else if(item.classList.contains('hard-btn') && diff != 2)
-            diff = 2
-
-        initGame()
-   })
+colorModeBtn.addEventListener('click',()=>{
+    colorMode++
+    if(colorMode > max_colorMode-1)
+        colorMode = 0
+    //initGame()
+    DisplayStuff()
 })
 
 function autoMove(){
@@ -225,7 +261,11 @@ function autoMove(){
     if(currDirection != 0){
         cellArray[currPlrIdx].classList.remove(snakeTag)
         cellArray[currPlrIdx].classList.add(bodyTag)
+        cellArray[currPlrIdx].classList.add(colorBTag+'-'+currBtag)
+        if(colorMode < max_colorMode-1) currBtag = colorMode+1
+        else currBtag++
         tailArr.enqueue(currPlrIdx)
+        if(currBtag > max_colorMode -1) currBtag = 1
 
         if(currDirection === 1){
             currPlrIdx -= diff_set[diff].mapSize
@@ -282,9 +322,20 @@ function autoMove(){
         if(cellArray[currPlrIdx].classList.contains(wallTag) || cellArray[currPlrIdx].classList.contains(bodyTag)){
             YouLose()
         }
+        if(snakeMode == 1) snakeLength = Math.floor((score)/10)+1
+        else if(snakeMode == 2) snakeLength = 3
+        else snakeLength = score + 1
+        if(tailArr.size()> snakeLength){
+            let clist = cellArray[tailArr.dequeue()].classList
+            clist.remove(bodyTag)
+            clist.forEach(clsi=>{
+                if(clsi.slice(0,5) == 'color')
+                    clist.remove(clsi)
+            })
 
-        if(tailArr.size()> score + 1){
-            cellArray[tailArr.dequeue()].classList.remove(bodyTag)
+        }
+        if(snakeLength >= max_snakeLength){
+            YouWin()
         }
     }
 }
@@ -310,8 +361,12 @@ function spawnApple(code = 0){
         spawnApple()
     }
 
-    if(code === 99)
+    if(code === 99){
         cellArray[AplIdx].classList.add(G_appleTag)
+        setTimeout( ()=>{
+            cellArray[AplIdx].classList.remove(G_appleTag)
+        }, 10000)
+    }
     else if(code === 8038)
         cellArray[AplIdx].classList.add(bombTag)
     else
@@ -353,66 +408,96 @@ function DisplayStuff(){
     let des_text =''
 
     if(diff == 0){
-        diffDP.innerHTML = '<span id="green">Ez</span>'
+        diffModeBtn.textContent = 'Difficulty: Ez'
         scoreDP.textContent += hi_ez
     }
     else if(diff == 1){
-        diffDP.innerHTML = '<span id="blue">Medium</span>'
+        diffModeBtn.textContent = 'Difficulty: Normal'
         scoreDP.textContent += hi_med
     }
     else if(diff = 2){
-        diffDP.innerHTML = '<span id="red">Hard</span>'
+        diffModeBtn.textContent = 'Difficulty: Hard'
         scoreDP.textContent += hi_hard
     }
 
     if( wallMode == 0)
-        wallActiveBtn.textContent = "Wall: Off"
+        wallModeBtn.textContent = "Wall: Off"
     else if( wallMode == 1)
-        wallActiveBtn.textContent = "Wall: Ring"
+        wallModeBtn.textContent = "Wall: Ring"
     else if( wallMode == 2)
-        wallActiveBtn.textContent = "Wall: Random 5%"
+        wallModeBtn.textContent = "Wall: Random 5%"
     else if( wallMode == 3)
-        wallActiveBtn.textContent = "Wall: Random 10%"
+        wallModeBtn.textContent = "Wall: Random 10%"
 
-    if(wallMode != 0) des_text = 'Wall = lose. '
+    if(wallMode != 0) des_text = 'Wall = lose ('+ (wallMode) +'/'+ (max_WallMode-1) +').'
+
+    if(snakeMode == 0){
+        snakeModeBtn.textContent = "Snake: Normal growth"
+        des_text += ' Normal growth'
+    } else  if(snakeMode == 1){
+        snakeModeBtn.textContent = "Snake: Slow growth"
+        des_text += ' Slow growth'
+    }else  if(snakeMode == 2){
+        snakeModeBtn.textContent = "Snake: No growth"
+        des_text += ' Forever small'
+    }
+
+    des_text +=' ('+ (snakeMode+1) +'/'+ max_snakeMode+').'
 
     if( gameMode == 0){
-        gameModeBtn.textContent = "Classic"
-        des_text += 'Classic game.'
+        gameModeBtn.textContent = "Game: Classic"
+        des_text += ' Classic game.'
     }
     else if( gameMode == 1){
-        gameModeBtn.textContent = "Bonus"
-        des_text +='Each 10pts => special treat +5pts.'
+        gameModeBtn.textContent = "Game: Bonus"
+        des_text +=' Each 10pts => special treat +5pts (despawn: 10s).'
     }
     else if( gameMode == 2){
-        gameModeBtn.textContent =  "Banquet 5%"
-        des_text +='All you can eat.'
+        gameModeBtn.textContent =  "Game: Banquet 5%"
+        des_text +=' All you can eat.'
     }
     else if( gameMode == 3){
-        gameModeBtn.textContent = "Banquet 10%"
-        des_text +='Want some more? here u are.'
+        gameModeBtn.textContent = "Game: Banquet 10%"
+        des_text +=' Want some more? here u are.'
     }
     else if( gameMode == 4){
-        gameModeBtn.textContent = "Meteor"
-        des_text +='Meteor hit = -7pts. Score < 0 = Lose'
+        gameModeBtn.textContent = "Game: Meteor"
+        des_text +=' Meteor hit = -7pts. Score < 0 = Lose'
     }
     else if( gameMode == 5){
-        gameModeBtn.textContent = "Bomb 3%"
-        des_text +='Bomb hit = -3pts. Score < 0 = Lose'
+        gameModeBtn.textContent = "Game: Bomb 3%"
+        des_text +=' Bomb hit = -3pts. Score < 0 = Lose'
     }
     else if( gameMode == 6){
-        gameModeBtn.textContent = "Hell's paradise"
-        des_text +='Wonder how long can you survive...'
+        gameModeBtn.textContent = "Game: Hell's paradise"
+        des_text +=' Wonder how long can you survive...'
     }
 
+    des_text +=' ('+ (gameMode+1) +'/'+ max_gameMode+').'
 
+    if(speedMode == 0){
+        speedModeBtn.textContent = "Speed: Sluggish"
+    }else if(speedMode == 1){
+        speedModeBtn.textContent = "Speed: Slow"
+    } else if(speedMode == 2){
+        speedModeBtn.textContent = "Speed: Normal"
+    } else if(speedMode == 3){
+        speedModeBtn.textContent = "Speed: Fast"
+    } else if(speedMode == 4){
+        speedModeBtn.textContent = "Speed: Too Fast"
+    }
+
+    
+    colorModeBtn.textContent = "Color: Type "+ colorMode
 
     desDP.textContent = des_text 
-
-
 }
 
 function YouLose(){
     alert('You lose :(')
+    initGame()
+}
+function YouWin(){
+    alert('You win :)')
     initGame()
 }

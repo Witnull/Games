@@ -54,27 +54,47 @@ body{
 
 .grid .fruit{
   background-color: rgb(73, 152, 20);  
-  box-shadow:0px 0px 5px 5px rgb(255, 0, 0) inset;
+  box-shadow:0px 0px 5px 3px rgb(255, 0, 0) inset;
 }
 .grid .Gapple{
-    background-color: rgb(25, 0, 255);  
-    box-shadow:0px 0px 5px 5px rgb(255, 251, 0) inset;
+    background-color: rgb(122, 117, 20);  
+    box-shadow:0px 0px 5px 1px rgb(242, 255, 0);
 }
 .grid .meteor{
-    background-color: rgb(123, 72, 0);  
-    box-shadow:0px 0px 5px 5px rgb(8, 215, 234) inset;
+    background-color: rgb(178, 104, 0);  
+    box-shadow:0px 0px 5px 3px rgb(8, 193, 234) ;
 }
 .grid .bomb{
-    background-color: rgb(64, 255, 0);  
+    background-color: rgb(255, 221, 0);  
     box-shadow:0px 0px 0px 5px rgb(162, 0, 255) inset;
 }
 .grid .snake{
-    background-color: rgb(19, 96, 3);
-    box-shadow:0px 0px 5px 2px rgb(104, 202, 34) inset;
+    background-color: rgb(38, 190, 91);
+    box-shadow:0px 0px 3px 3px rgb(203, 140, 5);
 }
-.grid .tail{
-    background-color: rgb(68, 165, 68);
-    box-shadow:0px 0px 0px 6px rgb(98, 218, 28) inset;
+.grid .color-1{
+    background-color: rgb(22, 235, 22);
+    box-shadow:0px 0px 0px 6px rgb(48, 112, 11) inset;
+}
+.grid .color-2{
+    background-color: rgb(255, 145, 1);
+    box-shadow:0px 0px 0px 6px rgb(132, 96, 13) inset;
+}
+.grid .color-3{
+    background-color: rgb(14, 145, 245);
+    box-shadow:0px 0px 0px 6px rgb(11, 111, 111) inset;
+}
+.grid .color-4{
+    background-color: rgb(187, 14, 245);
+    box-shadow:0px 0px 0px 6px rgb(103, 11, 111) inset;
+}
+.grid .color-5{
+    background-color: rgb(245, 99, 14);
+    box-shadow:0px 0px 0px 6px rgb(111, 36, 11) inset;
+}
+.grid .color-6{
+    background-color: rgb(245, 207, 14);
+    box-shadow:0px 0px 0px 6px rgb(111, 111, 11) inset;
 }
 .grid .wall{
     background-color: rgb(203, 203, 203);
@@ -90,19 +110,10 @@ body{
     color:rgb(244, 94, 94);
 }
 .btn{
-    width: 100px;
-    height: 30px;
+    width: 170px;
+    height: 50px;
     border-radius: 10px;
     font-weight: bolder;
-}
-.ez-btn{
-    background-color: chartreuse;
-}
-.med-btn{
-    background-color: rgb(109, 109, 232);
-}
-.hard-btn{
-    background-color: rgb(244, 94, 94);
 }
 img{
     width: 100%;
@@ -126,4 +137,9 @@ img{
 .cell-forDP-hard{
     width: 10px;
     height: 10px;
+}
+ul{
+    list-style: none;
+    padding: 5px;
+    margin: auto;
 }
