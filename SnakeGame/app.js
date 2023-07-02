@@ -4,7 +4,8 @@ const diffDP =document.querySelector('#diffDp')
 const diff_change =document.querySelector('.change-diff')
 const restartBtn = document.querySelector('.restart')
 const wallActiveBtn = document.querySelector('.isWall')
-
+const gameModeBtn = document.querySelector('.gameMode')
+const desDP = document.querySelector('#des')
 
 const gridSize = 550
 const diff_set=[
@@ -12,16 +13,19 @@ const diff_set=[
         speed: 1, // 0
         mapSize: 11,
         clName: 'ez',
+        dpClName: 'cell-forDP-ez',
     },
     {
         speed: 3, // 1
         mapSize: 25,
         clName: 'med',
+        dpClName: 'cell-forDP-med',
     },
     {
         speed: 5, // 2
         mapSize: 55,
         clName: 'hard',
+        dpClName: 'cell-forDP-hard',
     },
 ]
 
@@ -63,9 +67,18 @@ const snakeTag ='snake'
 const appleTag = 'fruit'
 const bodyTag = 'tail'
 const wallTag = 'wall'
-const default_speed = 700 // 1s per block
+const G_appleTag = 'Gapple'
+const bombTag = 'bomb'
+const meteorTag = 'meteor'
+
+
+const default_speed = 700 // .7s per block
+const default_meteorSpawn = 1000 // 5s
+const default_meteorDespawn = 7000 
 const default_wallMode = 0 // 0:off 1:ring 2:random
 const max_WallMode = 4
+const default_gameMode = 0 // 0:Classic 1:Bonus fruit + 1pts   2:Banquet 5%  3:Banquet 10% 4:meteor 5:Bomb 3%
+const max_GameMode = 7
 
 let hi_ez =0
 let hi_med =0
@@ -80,6 +93,8 @@ let timerId_autoMove = null
 let score = 0
 let cellArray 
 let wallMode = 0
+let gameMode = 0 
+let meteor_timerId = null
 
 
 
@@ -94,33 +109,56 @@ function generateMap(){
         cell.classList.add('cell')
         cell.classList.add(diff_set[diff].clName)
         cell.classList.add(i)
+        
+        let ran = Math.random()*100
 
-        if(wallMode != 0){
-            if(wallMode == 1){
-                if( i < diff_set[diff].mapSize ||    // top
-                    i % diff_set[diff].mapSize  == 0 || // left side
-                    i % diff_set[diff].mapSize == diff_set[diff].mapSize -1 || // right side
-                    i > (diff_set[diff].mapSize* diff_set[diff].mapSize - diff_set[diff].mapSize) ){// bottom
-                   cell.classList.add(wallTag)     
-                }
-            }
-            else if(wallMode == 2){
-                let ran = Math.random()*100
-                if( ran >= 40 && ran <= 45){
-                    cell.classList.add(wallTag)
-                }
-            }
-            else if(wallMode == 3){
-                let ran = Math.random()*100
-                if( ran >= 40 && ran <= 51){
-                    cell.classList.add(wallTag)
-                }
+        if(wallMode === 1){
+            if( i < diff_set[diff].mapSize ||    // top
+                i % diff_set[diff].mapSize  == 0 || // left side
+                i % diff_set[diff].mapSize == diff_set[diff].mapSize -1 || // right side
+                i > (diff_set[diff].mapSize* diff_set[diff].mapSize - diff_set[diff].mapSize) ){// bottom
+                cell.classList.add(wallTag)     
             }
         }
-
+        else if(wallMode === 2){
+            if( ran >= 40 && ran <= 45){
+                cell.classList.add(wallTag)
+            }
+        }
+        else if(wallMode === 3){
+            if( ran >= 40 && ran <= 51){
+                cell.classList.add(wallTag)
+            }
+        }
+        
         gridd.appendChild(cell)
     }
     cellArray = gridd.querySelectorAll('.cell')
+}
+
+function updCells(){
+    cellArray.forEach(()=>{
+        let ran = Math.random()*100
+
+        if(gameMode ===2){
+            if( ran >= 40 && ran <= 45){
+                spawnApple()
+            }
+        }
+        if(gameMode ===3 || gameMode === 6){
+            if( ran >= 40 && ran <= 50){
+                if(ran >= 45 && ran <= 46)
+                    spawnApple(99)
+                else
+                    spawnApple()
+            }
+        }
+        if(gameMode ===5 || gameMode === 6){
+            if( ran >= 40 && ran <= 43){
+                spawnApple(8038)
+            }
+        }
+    })
 }
 function initGame(){
     // reset
@@ -130,8 +168,13 @@ function initGame(){
     cellArray = {}
     score =0
     clearInterval(timerId_autoMove)
+    clearInterval(meteor_timerId)
     document.removeEventListener('keyup',changeDirection)
     generateMap()
+    updCells()
+    if(gameMode === 4|| gameMode === 6){
+        meteor_timerId = setInterval(spawnMeteor,default_meteorSpawn/diff_set[diff].speed)
+    }
 
 
     // spawn player
@@ -157,6 +200,13 @@ wallActiveBtn.addEventListener('click',()=>{
         wallMode = 0
     initGame()
 })
+gameModeBtn.addEventListener('click',()=>{
+    gameMode++
+    if(gameMode > max_GameMode-1)
+        gameMode = 0
+    initGame()
+})
+
 diff_change.querySelectorAll('.btn').forEach( item =>{
    item.addEventListener('click',() => {
         if(item.classList.contains('ez-btn') && diff != 0)
@@ -203,19 +253,31 @@ function autoMove(){
        // console.log(tailArr.size())
 
        /// eat apple
-        if(cellArray[currPlrIdx].classList.contains(appleTag)){
-            play_collectSFX()
+        if(cellArray[currPlrIdx].classList.contains(appleTag)){         
             cellArray[currPlrIdx].classList.remove(appleTag)
-            score++
-            if(diff == 0 &&  score >= hi_ez)
-                hi_ez = score
-            if(diff == 1 && score >= hi_med)
-                hi_med = score
-            if(diff == 2 && score >= hi_hard)
-                hi_hard = score
-        
+            updScore()
             spawnApple()
-            DisplayStuff()
+
+            if((gameMode === 1|| gameMode === 4)&& score%10 == 0)
+                spawnApple(99)
+            
+            let ran = Math.random()*100
+            if((gameMode >= 2)&& (ran >= 38 && ran <= 48))
+                spawnApple(99)
+        }
+        if(cellArray[currPlrIdx].classList.contains(G_appleTag)){         
+            cellArray[currPlrIdx].classList.remove(G_appleTag)
+            updScore(5)
+        }
+        if(cellArray[currPlrIdx].classList.contains(bombTag)){         
+            cellArray[currPlrIdx].classList.remove(bombTag)
+            updScore(-3)
+            spawnApple(8038)
+        }
+        if(cellArray[currPlrIdx].classList.contains(meteorTag)){         
+            cellArray[currPlrIdx].classList.remove(meteorTag)
+            updScore(-7)
+            spawnApple(99)
         }
         if(cellArray[currPlrIdx].classList.contains(wallTag) || cellArray[currPlrIdx].classList.contains(bodyTag)){
             YouLose()
@@ -236,15 +298,59 @@ function changeDirection(e){
     if((e.key == 'd' || e.key == 'ArrowRight')&& currDirection != 3)
         inptDirection = 4
 }
-function spawnApple(){
+function spawnApple(code = 0){
     AplIdx = Math.floor(Math.random()*cellArray.length)
-    if(cellArray[AplIdx].classList.contains(snakeTag) || cellArray[AplIdx].classList.contains(wallTag)) spawnApple()
-    cellArray[AplIdx].classList.add(appleTag)
-    
+    let clist = cellArray[AplIdx].classList
+    if(clist.contains(snakeTag) || 
+    clist.contains(wallTag) ||  
+    clist.contains(bodyTag) || 
+    clist.contains(G_appleTag) ||  
+    clist.contains(bombTag) ||  
+    clist.contains(appleTag) ) {
+        spawnApple()
+    }
+
+    if(code === 99)
+        cellArray[AplIdx].classList.add(G_appleTag)
+    else if(code === 8038)
+        cellArray[AplIdx].classList.add(bombTag)
+    else
+        cellArray[AplIdx].classList.add(appleTag)
+}
+function spawnMeteor() {
+    let ran =Math.floor(Math.random()*cellArray.length)
+    let clist =cellArray[ran].classList
+    if(clist.contains(snakeTag) || clist.contains(bodyTag)|| clist.contains(appleTag) || clist.contains(meteorTag)) spawnMeteor()
+    /// remove class w expection
+    clist.forEach(clsi=>{
+        if(clsi == wallTag || clsi == G_appleTag )
+            clist.remove(clsi)
+    })
+   // console.log(cellArray.length)
+    clist.add(meteorTag)
+
+    setTimeout( ()=>{
+        cellArray[ran].classList.remove(meteorTag)
+    }, default_meteorDespawn/diff_set[diff].speed)
+}
+
+function updScore(amt =1) {
+    score+= amt
+    play_collectSFX()
+    if(diff == 0 &&  score >= hi_ez)
+        hi_ez = score
+    if(diff == 1 && score >= hi_med)
+        hi_med = score
+    if(diff == 2 && score >= hi_hard)
+        hi_hard = score
+    DisplayStuff()
+    if(score <= -1)
+        YouLose()
 }
 
 function DisplayStuff(){
     scoreDP.textContent = score + "| Hi: "
+    let des_text =''
 
     if(diff == 0){
         diffDP.innerHTML = '<span id="green">Ez</span>'
@@ -267,6 +373,43 @@ function DisplayStuff(){
         wallActiveBtn.textContent = "Wall: Random 5%"
     else if( wallMode == 3)
         wallActiveBtn.textContent = "Wall: Random 10%"
+
+    if(wallMode != 0) des_text = 'Wall = lose. '
+
+    if( gameMode == 0){
+        gameModeBtn.textContent = "Classic"
+        des_text += 'Classic game.'
+    }
+    else if( gameMode == 1){
+        gameModeBtn.textContent = "Bonus"
+        des_text +='Each 10pts => special treat +5pts.'
+    }
+    else if( gameMode == 2){
+        gameModeBtn.textContent =  "Banquet 5%"
+        des_text +='All you can eat.'
+    }
+    else if( gameMode == 3){
+        gameModeBtn.textContent = "Banquet 10%"
+        des_text +='Want some more? here u are.'
+    }
+    else if( gameMode == 4){
+        gameModeBtn.textContent = "Meteor"
+        des_text +='Meteor hit = -7pts. Score < 0 = Lose'
+    }
+    else if( gameMode == 5){
+        gameModeBtn.textContent = "Bomb 3%"
+        des_text +='Bomb hit = -3pts. Score < 0 = Lose'
+    }
+    else if( gameMode == 6){
+        gameModeBtn.textContent = "Hell's paradise"
+        des_text +='Wonder how long can you survive...'
+    }
+
+
+
+    desDP.textContent = des_text 
+
+
 }
 
 function YouLose(){
