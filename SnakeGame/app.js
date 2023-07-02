@@ -260,7 +260,7 @@ function DisplayStuff(){
     }
 
     if( wallMode == 0)
-         wallActiveBtn.textContent = "Wall: Off"
+        wallActiveBtn.textContent = "Wall: Off"
     else if( wallMode == 1)
         wallActiveBtn.textContent = "Wall: Ring"
     else if( wallMode == 2)
